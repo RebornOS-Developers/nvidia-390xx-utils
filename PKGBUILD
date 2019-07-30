@@ -1,9 +1,9 @@
-# Contributor: Thomas Baechler <thomas@archlinux.org>
-# Maintainer: Philip Müller <philm[at]manjaro[dog]org>
+# Maintainer:  Philip Müller <philm[at]manjaro[dog]org>
+# Contributor: Helmut Stult <helmut@manjaro.org>
 
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'mhwd-nvidia-390xx')
-pkgver=390.116
+pkgver=390.129
 pkgrel=1
 arch=('i686' 'x86_64')
 url="http://www.nvidia.com/"
@@ -19,7 +19,7 @@ sha256sums=('11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167')
 sha256sums_i686=('13133f07e8c733eeca9f78decbcd17754f37f84b9038c8b235f9e89b52fc5b29')
-sha256sums_x86_64=('de85a2eea39ca16e25645b345259b01fbe858b833286b7e6785afa273009ef6f')
+sha256sums_x86_64=('a7925a327cab828d1eb9e74f8943623c5dbc9a5e376a4c0184065d4a319696c1')
 
 [[ "$CARCH" = "i686" ]] && _pkg="NVIDIA-Linux-x86-${pkgver}"
 #[[ "$CARCH" = "x86_64" ]] && _pkg="NVIDIA-Linux-x86_64-${pkgver}"
