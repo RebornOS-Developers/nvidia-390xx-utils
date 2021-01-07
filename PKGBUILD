@@ -3,7 +3,7 @@
 
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'mhwd-nvidia-390xx')
-pkgver=390.138
+pkgver=390.141
 pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -12,7 +12,7 @@ options=('!strip')
 durl="http://us.download.nvidia.com/XFree86/Linux-x86"
 source=("${durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run"
         'mhwd-nvidia' 'nvidia-drm-outputclass.conf' 'nvidia-390xx-utils.sysusers')
-sha256sums=('a34a19b618be0eb06c4699247489833a8f22c59423f246248614e0a59b1508da'
+sha256sums=('d7d763aa52574b554dd3d8cbb93a6a63572a9c2bfd3bc3873ec5338c067f70ba'
             '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167')
