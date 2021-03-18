@@ -4,7 +4,7 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'mhwd-nvidia-390xx')
 pkgver=390.141
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -185,8 +185,7 @@ package_nvidia-390xx-utils() {
     ln -s nvidia "${pkgdir}/usr/share/doc/nvidia-utils"
 
     # distro specific files must be installed in /usr/share/X11/xorg.conf.d
-    install -m755 -d "${pkgdir}/usr/share/X11/xorg.conf.d"
-    install -m644 "${srcdir}/${_pkg}/nvidia-drm-outputclass.conf" "${pkgdir}/usr/share/X11/xorg.conf.d/10-nvidia-drm-outputclass.conf"
+    install -Dm644 "${srcdir}/nvidia-drm-outputclass.conf" "${pkgdir}/usr/share/X11/xorg.conf.d/10-nvidia-drm-outputclass.conf"
 
     install -Dm644 "${srcdir}/nvidia-390xx-utils.sysusers" "${pkgdir}/usr/lib/sysusers.d/$pkgname.conf"
 
