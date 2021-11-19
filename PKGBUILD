@@ -4,18 +4,20 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'mhwd-nvidia-390xx')
 pkgver=390.144
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
 options=('!strip')
 durl="http://us.download.nvidia.com/XFree86/Linux-x86"
 source=("${durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run"
-        'mhwd-nvidia' 'nvidia-drm-outputclass.conf' 'nvidia-390xx-utils.sysusers')
+        'mhwd-nvidia' 'nvidia-drm-outputclass.conf' 'nvidia-390xx-utils.sysusers'
+        '30-nvidia-ignoreabi.conf')
 sha256sums=('d9b36e51253592d7aeecb9758ebccf30348ab364c88f95aa5ba33c767470949c'
             '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
-            'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167')
+            'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
+            'b03237d533535df35129925b5a348a4b28fd25c51b5e4cf8908df3b14758eba4')
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 
 create_links() {
@@ -83,6 +85,9 @@ package_nvidia-390xx-utils() {
     conflicts=('nvidia-libgl' 'nvidia-utils')
     replaces=('nvidia-libgl')
     install="${pkgname}.install"
+    
+    # Exceedingly hacky workaround for Xorg 1.21 until Nvidia updates the driver
+    install -D -m644 30-nvidia-ignoreabi.conf "${pkgdir}/etc/X11/xorg.conf.d/30-nvidia-ignoreabi.conf"
 
     cd "${_pkg}"
 
