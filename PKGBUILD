@@ -11,7 +11,7 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
 pkgver=390.147
-pkgrel=3
+pkgrel=4
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
@@ -19,12 +19,13 @@ options=('!strip')
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
         'mhwd-nvidia' 'nvidia-drm-outputclass.conf' 'nvidia-390xx-utils.sysusers'
-        'nvidia-390xx.rules' 'kernel-4.16.patch')
+        'nvidia-390xx.rules' 'nvidia.shutdown' 'kernel-4.16.patch')
 sha256sums=('3fc4b5a7c64326cea79156fc31e8160a89621219df09a4cd268844c3e318accc'
             '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3'
+            '402b5549cbc7cc7e3d5d64fdff2c6e3c9d246cbf0066410a698e1457ed749172'
             '6c5f5b11dbb43f40f4e2c6a2b5417f44b50cf29d16bbd091420b7e737acb6ccd')
 
 create_links() {
@@ -220,6 +221,9 @@ package_nvidia-390xx-utils() {
     install -D -m644 nvidia-settings.png "${pkgdir}/usr/share/pixmaps/nvidia-settings.png"
     install -D -m755 "libnvidia-gtk3.so.$pkgver" "$pkgdir/usr/lib/libnvidia-gtk3.so.$pkgver"
     sed -e 's:__UTILS_PATH__:/usr/bin:' -e 's:__PIXMAP_PATH__:/usr/share/pixmaps:' -i "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
+
+    # install fix for oldroot unmount
+    install -Dm755 "${srcdir}/nvidia.shutdown" "${pkgdir}/usr/lib/systemd/system-shutdown/nvidia.shutdown"
 
     create_links
 }
