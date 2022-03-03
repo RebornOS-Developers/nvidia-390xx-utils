@@ -11,7 +11,7 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
 pkgver=390.147
-pkgrel=4
+pkgrel=5
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
@@ -220,7 +220,12 @@ package_nvidia-390xx-utils() {
     install -D -m644 nvidia-settings.desktop "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
     install -D -m644 nvidia-settings.png "${pkgdir}/usr/share/pixmaps/nvidia-settings.png"
     install -D -m755 "libnvidia-gtk3.so.$pkgver" "$pkgdir/usr/lib/libnvidia-gtk3.so.$pkgver"
-    sed -e 's:__UTILS_PATH__:/usr/bin:' -e 's:__PIXMAP_PATH__:/usr/share/pixmaps:' -i "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
+    sed \
+        -e 's:__UTILS_PATH__:/usr/bin:' \
+        -e 's:__PIXMAP_PATH__:/usr/share/pixmaps:' \
+        -e 's/__NVIDIA_SETTINGS_DESKTOP_CATEGORIES__/Settings;HardwareSettings;/' \
+        -e 's/Icon=.*/Icon=nvidia-settings/' \
+        -i "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
 
     # install fix for oldroot unmount
     install -Dm755 "${srcdir}/nvidia.shutdown" "${pkgdir}/usr/lib/systemd/system-shutdown/nvidia.shutdown"
