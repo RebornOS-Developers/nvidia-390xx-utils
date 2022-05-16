@@ -10,23 +10,21 @@
 
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
-pkgver=390.147
-pkgrel=6
+pkgver=390.151
+pkgrel=1
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
 options=('!strip')
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
-        'kernel-5.17.patch'
         'kernel-4.16.patch'
         'mhwd-nvidia'
         'nvidia-drm-outputclass.conf'
         'nvidia-390xx-utils.sysusers'
         'nvidia-390xx.rules'
         'nvidia.shutdown')
-sha256sums=('3fc4b5a7c64326cea79156fc31e8160a89621219df09a4cd268844c3e318accc'
-            '692f20d5191791a88d755abf6049af22083186e7dc5818577f5f5f60b1905e15'
+sha256sums=('6e4fd2258465f5d5527fe80abd46de925a30348b4a84658498a6d75caf42c47c'
             '6c5f5b11dbb43f40f4e2c6a2b5417f44b50cf29d16bbd091420b7e737acb6ccd'
             '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
@@ -56,10 +54,6 @@ prepare() {
     # From loqs via https://bugs.archlinux.org/task/58074
     patch -Np1 -i ../kernel-4.16.patch
 
-    # 5.17, PDE_DATA() renamed to pde_data()
-    # Joan Bruguera via Ike Devolder
-    patch -Np1 -i ../kernel-5.17.patch
-
     cd kernel
     sed -i "s/__VERSION_STRING/${pkgver}/" dkms.conf
     sed -i 's/__JOBS/`nproc`/' dkms.conf
@@ -81,7 +75,7 @@ package_opencl-nvidia-390xx() {
     pkgdesc="OpenCL implemention for NVIDIA"
     depends=('zlib')
     optdepends=('opencl-headers: headers necessary for OpenCL development')
-    provides=("opencl-nvidia=$pkgver" 'opencl-driver')
+    provides=("opencl-nvidia=${pkgver}" 'opencl-driver')
     conflicts=('opencl-nvidia')
 
     cd "${_pkg}"
@@ -99,8 +93,9 @@ package_opencl-nvidia-390xx() {
 
 package_nvidia-390xx-dkms() {
     pkgdesc="NVIDIA drivers - module sources"
-    depends=('dkms' "nvidia-390xx-utils=$pkgver" 'libglvnd')
-    provides=('NVIDIA-MODULE')
+    depends=('dkms' "nvidia-390xx-utils=${pkgver}" 'libglvnd')
+    provides=('NVIDIA-MODULE' "nvidia-dkms=${pkgver}")
+    conflicts=('nvidia-dkms')
 
     cd ${_pkg}
 
@@ -115,7 +110,7 @@ package_nvidia-390xx-utils() {
     depends=('xorg-server' 'libglvnd' 'egl-wayland' 'mhwd' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl-390xx')
     optdepends=('xorg-server-devel: nvidia-xconfig'
                 'opencl-nvidia-390xx: OpenCL support')
-    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=$pkgver" 'nvidia-390xx-libgl')
+    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=${pkgver}" 'nvidia-390xx-libgl')
     conflicts=('nvidia-libgl' 'nvidia-utils' 'nvidia-390xx-libgl')
     replaces=('nvidia-390xx-libgl')
     install="${pkgname}.install"
@@ -229,7 +224,7 @@ package_nvidia-390xx-utils() {
     install -D -m644 nvidia-settings.1.gz "${pkgdir}/usr/share/man/man1/nvidia-settings.1.gz"
     install -D -m644 nvidia-settings.desktop "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
     install -D -m644 nvidia-settings.png "${pkgdir}/usr/share/pixmaps/nvidia-settings.png"
-    install -D -m755 "libnvidia-gtk3.so.$pkgver" "$pkgdir/usr/lib/libnvidia-gtk3.so.$pkgver"
+    install -D -m755 "libnvidia-gtk3.so.${pkgver}" "$pkgdir/usr/lib/libnvidia-gtk3.so.${pkgver}"
     sed \
         -e 's:__UTILS_PATH__:/usr/bin:' \
         -e 's:__PIXMAP_PATH__:/usr/share/pixmaps:' \
@@ -244,7 +239,7 @@ package_nvidia-390xx-utils() {
 }
 
     package_mhwd-nvidia-390xx() {
-    pkgdesc="MHWD module-ids for nvidia $pkgver"
+    pkgdesc="MHWD module-ids for nvidia ${pkgver}"
     arch=('any')
 
     install -d -m755 "${pkgdir}/var/lib/mhwd/ids/pci/"
