@@ -11,7 +11,7 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
 pkgver=390.151
-pkgrel=2
+pkgrel=3
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
@@ -20,6 +20,7 @@ _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
         'kernel-4.16.patch'
         'kernel-5.18.patch'
+        'kernel-5.19.patch'
         'mhwd-nvidia'
         'nvidia-drm-outputclass.conf'
         'nvidia-390xx-utils.sysusers'
@@ -28,6 +29,7 @@ source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.r
 sha256sums=('6e4fd2258465f5d5527fe80abd46de925a30348b4a84658498a6d75caf42c47c'
             '6c5f5b11dbb43f40f4e2c6a2b5417f44b50cf29d16bbd091420b7e737acb6ccd'
             'ccb82aea9665ad9ad8f0478dce7e257ae0138bda1bc97cd9a6f4499597e26c87'
+            'd1f6d83ea075eeadab2edb88108d166d70cea4a76d340877365cb2586e7beb0e'
             '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
@@ -60,6 +62,10 @@ prepare() {
     patch -Np1 -i ../kernel-5.18.patch
 
     cd kernel
+
+    # https://gist.github.com/joanbm/d630a02dde00bf087f64091d331f6dbb
+    patch -Np1 -i "$srcdir/kernel-5.19.patch"
+
     sed -i "s/__VERSION_STRING/${pkgver}/" dkms.conf
     sed -i 's/__JOBS/`nproc`/' dkms.conf
     sed -i 's/__DKMS_MODULES//' dkms.conf
