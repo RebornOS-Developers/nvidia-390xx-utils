@@ -10,8 +10,8 @@
 
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
-pkgver=390.151
-pkgrel=3
+pkgver=390.154
+pkgrel=1
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
@@ -25,16 +25,16 @@ source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.r
         'nvidia-drm-outputclass.conf'
         'nvidia-390xx-utils.sysusers'
         'nvidia-390xx.rules'
-        'nvidia.shutdown')
-sha256sums=('6e4fd2258465f5d5527fe80abd46de925a30348b4a84658498a6d75caf42c47c'
+#        'nvidia.shutdown'
+        )
+sha256sums=('20a10d71b13e03924a26b822d80884d961a8e2c61564645049d727f7d5a814ec'
             '6c5f5b11dbb43f40f4e2c6a2b5417f44b50cf29d16bbd091420b7e737acb6ccd'
             'ccb82aea9665ad9ad8f0478dce7e257ae0138bda1bc97cd9a6f4499597e26c87'
             'd1f6d83ea075eeadab2edb88108d166d70cea4a76d340877365cb2586e7beb0e'
             '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
-            '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3'
-            '402b5549cbc7cc7e3d5d64fdff2c6e3c9d246cbf0066410a698e1457ed749172')
+            '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3')
 
 create_links() {
     # create soname links
@@ -244,7 +244,7 @@ package_nvidia-390xx-utils() {
         -i "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
 
     # install fix for oldroot unmount
-    install -Dm755 "${srcdir}/nvidia.shutdown" "${pkgdir}/usr/lib/systemd/system-shutdown/nvidia.shutdown"
+#    install -Dm755 "${srcdir}/nvidia.shutdown" "${pkgdir}/usr/lib/systemd/system-shutdown/nvidia.shutdown"
 
     create_links
 }
