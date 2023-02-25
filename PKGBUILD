@@ -11,7 +11,7 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
 pkgver=390.157
-pkgrel=2
+pkgrel=3
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
@@ -101,7 +101,7 @@ package_nvidia-390xx-dkms() {
 
 package_nvidia-390xx-utils() {
     pkgdesc="NVIDIA drivers utilities"
-    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'mhwd' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl-390xx')
+    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl-390xx')
     optdepends=('xorg-server-devel: nvidia-xconfig'
                 'opencl-nvidia-390xx: OpenCL support')
     provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=${pkgver}" 'nvidia-390xx-libgl')
@@ -234,6 +234,7 @@ package_nvidia-390xx-utils() {
     package_mhwd-nvidia-390xx() {
     pkgdesc="MHWD module-ids for nvidia ${pkgver}"
     arch=('any')
+    depends=('mhwd')
 
     install -d -m755 "${pkgdir}/var/lib/mhwd/ids/pci/"
 
