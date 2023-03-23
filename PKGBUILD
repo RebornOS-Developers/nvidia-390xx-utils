@@ -11,7 +11,7 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
 pkgver=390.157
-pkgrel=3
+pkgrel=4
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
@@ -22,7 +22,6 @@ source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.r
         'nvidia-drm-outputclass.conf'
         'nvidia-390xx-utils.sysusers'
         'nvidia-390xx.rules'
-#        'nvidia.shutdown'
         )
 sha256sums=('162317a49aa5a521eb888ec12119bfe5a45cec4e8653efc575a2d04fb05bf581'
             '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
@@ -101,7 +100,7 @@ package_nvidia-390xx-dkms() {
 
 package_nvidia-390xx-utils() {
     pkgdesc="NVIDIA drivers utilities"
-    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl-390xx')
+    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl-390xx' 'nvidia-390xx-settings')
     optdepends=('xorg-server-devel: nvidia-xconfig'
                 'opencl-nvidia-390xx: OpenCL support')
     provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=${pkgver}" 'nvidia-390xx-libgl')
@@ -211,22 +210,6 @@ package_nvidia-390xx-utils() {
 
     echo "blacklist nouveau" | install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modprobe.d/${pkgname}.conf"
     echo "nvidia-uvm" | install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modules-load.d/${pkgname}.conf"
-
-    # nvidia-settings
-    install -D -m755 nvidia-settings "${pkgdir}/usr/bin/nvidia-settings"
-    install -D -m644 nvidia-settings.1.gz "${pkgdir}/usr/share/man/man1/nvidia-settings.1.gz"
-    install -D -m644 nvidia-settings.desktop "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
-    install -D -m644 nvidia-settings.png "${pkgdir}/usr/share/pixmaps/nvidia-settings.png"
-    install -D -m755 "libnvidia-gtk3.so.${pkgver}" "$pkgdir/usr/lib/libnvidia-gtk3.so.${pkgver}"
-    sed \
-        -e 's:__UTILS_PATH__:/usr/bin:' \
-        -e 's:__PIXMAP_PATH__:/usr/share/pixmaps:' \
-        -e 's/__NVIDIA_SETTINGS_DESKTOP_CATEGORIES__/Settings;HardwareSettings;/' \
-        -e 's/Icon=.*/Icon=nvidia-settings/' \
-        -i "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
-
-    # install fix for oldroot unmount
-#    install -Dm755 "${srcdir}/nvidia.shutdown" "${pkgdir}/usr/lib/systemd/system-shutdown/nvidia.shutdown"
 
     create_links
 }
