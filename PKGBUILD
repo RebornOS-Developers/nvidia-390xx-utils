@@ -2,7 +2,8 @@
 # Contributor: Helmut Stult
 
 # Arch credits:
-# Maintainer: Jonathon Fernyhough <jonathon+m2x+dev>
+# Contributor: Jonathon Fernyhough
+# Contributor: vnctdj
 # Contributor: Alonso Rodriguez <alonsorodi20 (at) gmail (dot) com>
 # Contributor: Sven-Hendrik Haase <svenstaro@gmail.com>
 # Contributor: Thomas Baechler <thomas@archlinux.org>
@@ -11,7 +12,7 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
 pkgver=390.157
-pkgrel=4
+pkgrel=5
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
@@ -22,12 +23,16 @@ source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.r
         'nvidia-drm-outputclass.conf'
         'nvidia-390xx-utils.sysusers'
         'nvidia-390xx.rules'
+        'kernel-6.2.patch'
+        'kernel-4.16+-memory-encryption.patch'
         )
 sha256sums=('162317a49aa5a521eb888ec12119bfe5a45cec4e8653efc575a2d04fb05bf581'
             '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
-            '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3')
+            '4fbfd461f939f18786e79f8dba5fdb48be9f00f2ff4b1bb2f184dbce42dd6fc3'
+            'a94d34cda96d443d02d992ee7962ce7c9949134b899e366fc3dafaf48bc19ebe'
+            '6c5f5b11dbb43f40f4e2c6a2b5417f44b50cf29d16bbd091420b7e737acb6ccd')
 
 create_links() {
     # create soname links
@@ -46,6 +51,13 @@ prepare() {
     bsdtar -xf nvidia-persistenced-init.tar.bz2
 
     sed -i 's/__NV_VK_ICD__/libGLX_nvidia.so.0/' nvidia_icd.json.template
+
+    # Restore phys_to_dma support (still needed for 390.138)
+    # From loqs via https://bugs.archlinux.org/task/58074
+    patch -Np1 -i ../kernel-4.16+-memory-encryption.patch
+
+    # From Joan Bruguera via Ike Devolder
+    patch -Np1 -i ../kernel-6.2.patch
 
     cd kernel
     sed -i "s/__VERSION_STRING/${pkgver}/" dkms.conf
@@ -86,7 +98,7 @@ package_opencl-nvidia-390xx() {
 
 package_nvidia-390xx-dkms() {
     pkgdesc="NVIDIA drivers - module sources"
-    depends=('dkms' "nvidia-390xx-utils=${pkgver}" 'libglvnd')
+    depends=('dkms' "nvidia-utils=${pkgver}" 'libglvnd')
     provides=('NVIDIA-MODULE' "nvidia-dkms=${pkgver}")
     conflicts=('nvidia-dkms')
 
@@ -100,10 +112,11 @@ package_nvidia-390xx-dkms() {
 
 package_nvidia-390xx-utils() {
     pkgdesc="NVIDIA drivers utilities"
-    depends=('xorg-server' 'libglvnd' 'egl-wayland' 'jansson' 'gtk3' 'libxv' 'libvdpau' 'libxnvctrl-390xx' 'nvidia-390xx-settings')
-    optdepends=('xorg-server-devel: nvidia-xconfig'
-                'opencl-nvidia-390xx: OpenCL support')
-    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=${pkgver}" 'nvidia-390xx-libgl')
+    depends=('xorg-server' 'libglvnd' 'egl-wayland')
+    optdepends=("nvidia-settings=${pkgver}: configuration tool"
+                'xorg-server-devel: nvidia-xconfig'
+                "opencl-nvidia=${pkgver}: OpenCL support")
+    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' "nvidia-utils=${pkgver}")
     conflicts=('nvidia-libgl' 'nvidia-utils' 'nvidia-390xx-libgl')
     replaces=('nvidia-390xx-libgl')
     install="${pkgname}.install"
